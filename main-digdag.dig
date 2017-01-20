@@ -1,0 +1,19 @@
+timezone: UTC
+
+schedule:
+  daily>: 00:00:00
+
++main:
+  _export:
+    host: 'mysql.hogehoge.ap-northeast-1.rds.amazonaws.com'
+    user: 'hoge'
+    password: 'fuga'
+    project_id: 'bigquery_sample_project'
+    dataset: 'bigquery_sample_dataset'
+
+  +all_load:
+    _parallel: true
+    +load_db1:
+      !include : 'tasks/db/db1.dig'
+    +load_db2:
+      !include : 'tasks/db/db2.dig'

@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  digdag:
+    build: .
+    container_name: digdag
+    ports:
+      - 65432:65432

@@ -1,0 +1,6 @@
+digdag:
+  task_definition: digdag
+  desired_count: 1
+  keep_desired_count: true
+  minimum_healthy_percent: 0
+  maximum_percent: 100

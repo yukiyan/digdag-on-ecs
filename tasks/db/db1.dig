@@ -1,0 +1,14 @@
++mysql_bigquery:
+  _export:
+      database: 'db1'
+
+  +load:
+    for_each>:
+      table: [
+        hoge_table_1,
+        hoge_table_2,
+        hoge_table_3,
+        hoge_table_4,
+      ]
+    _do:
+      embulk>: tasks/db/embulk/mysql_bigquery.yml

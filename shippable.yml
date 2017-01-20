@@ -1,0 +1,45 @@
+language: go
+go:
+  - 1.5
+env:
+  global:
+    - secure: hogehoge
+build:
+  ci:
+    - export DOCKER_TAG=${ECR_REPOSITORY_URL}:${BUILD_NUMBER}
+    - docker build --tag ${DOCKER_TAG} .
+    - docker run ${DOCKER_TAG} java -jar /usr/local/bin/digdag check
+  post_ci:
+    - >
+      go get github.com/stormcat24/ecs-formation;
+      echo -e "project_dir: $SHIPPABLE_BUILD_DIR/ecs-formation\naws_region: ap-northeast-1" > $HOME/.ecs-formation.yml
+    - ecs-formation task plan -p BUILD_NUMBER=${BUILD_NUMBER} -t digdag
+    - >
+      if [[ "${BRANCH}" == "master" ]]; then
+        sudo docker push ${DOCKER_TAG}
+        ecs-formation task -p BUILD_NUMBER=${BUILD_NUMBER} apply -t digdag
+        aws ecs update-service --cluster digdag --service digdag --task-definition digdag --deployment-configuration maximumPercent=100,minimumHealthyPercent=0
+      fi
+integrations:
+  hub:
+    - integrationName: ecr
+      type: ecr
+      region: ap-northeast-1
+      branches:
+        only:
+          - master
+  notifications:
+    - integrationName: email
+      type: email
+      on_success: never
+      on_failure: never
+      on_pull_request: never
+    - integrationName: slack
+      type: slack
+      on_failure: always
+      on_success: always
+      recipients:
+        - "#sandbox"
+      branches:
+        only:
+          - master

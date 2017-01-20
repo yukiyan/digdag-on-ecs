@@ -1,0 +1,10 @@
+digdag:
+  image: 123456.dkr.ecr.ap-northeast-1.amazonaws.com/digdag:${BUILD_NUMBER}
+  ports:
+    - 65432:65432
+  memory: 2000
+  essential: true
+  log_driver: awslogs
+  log_opt:
+    awslogs-group: /ecs/digdag
+    awslogs-region: ap-northeast-1

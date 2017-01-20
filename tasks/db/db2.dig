@@ -1,0 +1,14 @@
++mysql_bigquery:
+  _export:
+      database: 'db2'
+
+  +load:
+    for_each>:
+      table: [
+        sample_table_1,
+        sample_table_2,
+        sample_table_3,
+        sample_table_4,
+      ]
+    _do:
+      embulk>: tasks/db/embulk/mysql_bigquery.yml
